@@ -11,8 +11,8 @@ class Graph:
         graph = self.getallnodes()  # gets nodes in the form of one-D list
         startnode = self.getstartnode()  # gets the start node
         startnode.distance = 0   # set start node distance to zero
-        visitednodes = []   # lsit to store visited nodes
-        while len(graph):  # loop untill the list is empty
+        visitednodes = []   # list to store visited nodes
+        while len(graph):  # loop until the list is empty
             graph.sort(key=lambda x: x.distance)  # sort the list according to distance
             nearest_node = graph.pop(0)  # pops the first node from list
             if nearest_node.iswall:   # checks if the node is wall
@@ -90,7 +90,7 @@ class Graph:
         shortestpath = []  # list to store the shortest path
         currentnode = self.getfinishnode()  # sets the finish node as current node
         while currentnode:  # loop will continue until there is a node
-            shortestpath.insert(0, currentnode)  # currentnode is inserted at the beginning of the list
+            shortestpath.insert(0, currentnode)  # current-node is inserted at the beginning of the list
             currentnode = currentnode.previousnode  # previous node of current node is set as current node
             # the last node i.e the starting node wont't have any previous node, so it will return none
             # which will terminate the loop
