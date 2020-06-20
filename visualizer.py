@@ -16,7 +16,7 @@ color = {1: [0, 128, 0],  # green
          7: [200, 200, 200],  # silver
          8: [255, 255, 0]}  # yellow
 
-# following are global variables used to create rectanlugar objects
+# following are global variables used to create rectangular objects
 width = 20
 height = 20
 margin = 5
@@ -24,14 +24,14 @@ margin = 5
 screen.fill(color[4])  # fills the screen background with color from dictionary
 
 
-def drawrect(flag, x, y):  # function to draw rectangle, excpts colorcode, x-coordinate and y-coordinate
+def drawrect(flag, x, y):  # function to draw rectangle, excepts color-code, x-coordinate and y-coordinate
     pygame.draw.rect(screen, color[flag], [x, y, width, height])  # inbuilt pygame function to create rectangles
     pygame.display.flip()  # updates the screen
 
 
-def main():  # function to create basic structre of window
+def main():  # function to create basic structure of window
     grid = []  # array to hold rectangles
-    for row in range(20):  # loop creating reactangles
+    for row in range(20):  # loop creating rectangles
         rows = []
         for column in range(20):
             flag = 3
@@ -42,7 +42,7 @@ def main():  # function to create basic structre of window
                 flag = 2
                 # calls the draw rect function
             drawrect(flag, (margin + width) * row + margin, (margin + height) * column + margin)
-            rows.append(node.createnode(row, column))  # appends the reactangle in row
+            rows.append(node.createnode(row, column))  # appends the rectangles in row
         grid.append(rows)  # appends the row in grid
 
     djikstrabutton = Button(250, 550, 65, 30, 'arial', 20, 'Djikstra', 6, 7)
@@ -85,7 +85,7 @@ class Button:  # class use to create buttons
         # the returned surface will be the dimensions required to hold the surface
         textsurface = font.render(text, True, color[self.btextcolor])
         # textsurface provides the dimensions
-        # while textsurface.get_rect() provides the rectagnle to store
+        # while textsurface.get_rect() provides the rectangle to store
         # finally returns the surface (variable = textsurface)
         # textsurface.get_rect() creates returns a new rectangle covering the surface
         return textsurface, textsurface.get_rect()
@@ -107,8 +107,8 @@ def rungame(dijkstrabutton, resetbutton, grid):  # this function contains main w
     currentx = 0
     currenty = 0
     while running:
-        for event in pygame.event.get():  # checks for the evnet
-            if event.type == pygame.QUIT:  # if evnet type is quit, then proceed to quit the window
+        for event in pygame.event.get():  # checks for the event
+            if event.type == pygame.QUIT:  # if event type is quit, then proceed to quit the window
                 pygame.quit()  # end the pygame instance
                 quit()  # closes the window
 
@@ -117,7 +117,7 @@ def rungame(dijkstrabutton, resetbutton, grid):  # this function contains main w
                     g = djikstra.Graph(400)  # creates an instance of class graph from djikstra  module
                     g.grid = grid.copy()  # copies the grid into graph instance
                     path = g.dijkstra()  # gets the list of all visited nodes
-                    # this function accepts the colorcode, list of nodes and changes the color of visited nodes
+                    # this function accepts the color-code, list of nodes and changes the color of visited nodes
                     pathprint(7, path)
                     path = g.getshortestpath()  # gets the list of nodes leading to shortest path
                     pathprint(5, path)  #
@@ -138,7 +138,7 @@ def rungame(dijkstrabutton, resetbutton, grid):  # this function contains main w
                     # if no rectangle is clicked it returns -1
                     currentx, currenty = get_rectanglepos(mousex, mousey)
                     # by using rectangle coordinates,
-                    # the type of rectangle/node can be determined startnode, finishnode, normal nodes etc
+                    # the type of rectangle/node can be determined start-node, finish-node, normal nodes etc
                     # according to type of rectangle/node the flag value is set
                     flag = checknode(currentx, currenty, grid)
 
