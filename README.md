@@ -1,2 +1,2 @@
-visualize dijkstra's algorithm using pygames
+visualize various path finding algorithm using pygames
 # Path-finding-visualizer
