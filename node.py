@@ -1,4 +1,4 @@
-import sys
+import math
 
 # variables to hold values for row and column of start node and finish node
 start_node_row = 0
@@ -12,11 +12,12 @@ class Node:  # node class holds all the attributes related to node
         self.row = row
         self.column = column
         self.iswall = False
-        self.isstartnode = row == start_node_row and column == start_node_column
-        self.isfinishnode = row == finish_node_row and column == finish_node_column
-        self.distance = sys.maxsize
+        self.isstartnode = False
+        self.isfinishnode = False
+        self.distance = math.inf
         self.isvisited = False
         self.previousnode = None
+        self.isweight = False
 
 
 def createnode(row, column):
