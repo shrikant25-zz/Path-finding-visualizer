@@ -37,6 +37,7 @@ class Game:
         self.dijkstrabutton = Button(265, 550, 65, 30, 'arial', 20, 'Djikstra', 6, 7)
         self.bfsbutton = Button(215, 550, 30, 30, 'arial', 20, 'bfs', 6, 7)
         self.dfsbutton = Button(165, 550, 30, 30, 'arial', 20, 'dfs', 6, 7)
+        self.astarbutton = Button(115, 550, 30, 30, 'arial', 20, 'A*', 6, 7)
         self.resetbutton = Button(350, 550, 65, 30, 'arial', 20, 'Reset', 6, 7)
         self.flag = 0
         # creates the button instance
@@ -117,9 +118,6 @@ class Game:
                         b.getshortestpath()  # gets the list of nodes leading to shortest path
                         self.pathprint(5, b.shortestpath)  # '''
                         pygame.event.clear()  # clears the event queue
-                        # if any button is pressed during the execution of algorithm
-                        # that event will be removed from event queue
-                        # this avoids arbitrary functioning after the algorithm completes its process
 
                     elif self.dfsbutton.chechkifclicked():  # checks if the bfs button is pressed
                         self.cleargrid()
@@ -129,9 +127,16 @@ class Game:
                         d.getshortestpath()  # gets the list of nodes leading to shortest path
                         self.pathprint(5, d.shortestpath)  # '''
                         pygame.event.clear()  # clears the event queue
-                        # if any button is pressed during the execution of algorithm
-                        # that event will be removed from event queue
-                        # this avoids arbitrary functioning after the algorithm completes its process
+
+                    elif self.astarbutton.chechkifclicked():  # checks if the bfs button is pressed
+                        self.cleargrid()
+                        d = algorithms.Astar(self.grid)
+                        d.astar()
+                        self.pathprint(7, d.visitednodes)
+                        d.getshortestpath()  # gets the list of nodes leading to shortest path
+                        self.pathprint(5, d.shortestpath)  # '''
+                        pygame.event.clear()  # clears the event queue
+
 
                     elif self.resetbutton.chechkifclicked():
                         pygame.display.flip()
