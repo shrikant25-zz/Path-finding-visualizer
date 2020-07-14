@@ -1,4 +1,5 @@
 import math
+import heapq
 
 
 class Graph(object):
@@ -105,7 +106,6 @@ class Dijkstra(Graph):
                     neighbour.previousnode = nearest_node  # set current node as previous node of neighbour
 
 
-
 class Bfs(Graph):
     def __init__(self, grid):
         super().__init__(grid)
@@ -152,3 +152,57 @@ class Dfs(Graph):
         for neighbour in unvisitedneighbours:
             neighbour.previousnode = current_node  # set current node as previous node of neighbour
             self.nodesstack.append(neighbour)
+
+
+class Astar(Graph):
+    def __init__(self, grid):
+        super().__init__(grid)
+        self.currentcost = {}
+        self.minheap = []
+
+    def astar(self):
+        startnode = self.getstartnode()
+        self.getmanhattandistance(startnode)
+        self.currentcost[startnode] = startnode.manhattan
+        self.put(startnode, self.currentcost[startnode])
+        startnode.distance = 0
+
+        while not self.empty():
+            currentnode = self.get()
+            if currentnode.isfinishnode:
+                return
+            self.visitednodes.append(currentnode)
+            self.updateunvisitedneighbour(currentnode)
+
+    def updateunvisitedneighbour(self, current_node):
+        neighbours = self.getunvisitednodes(current_node)
+        for neighbour in neighbours:
+            if neighbour.isweight:
+                tentativecost = current_node.distance + 3
+            else:
+                tentativecost = current_node.distance + 1
+            if tentativecost < neighbour.distance:
+                neighbour.previousnode = current_node
+                neighbour.distance = tentativecost
+                self.getmanhattandistance(neighbour)
+                self.currentcost[neighbour] = neighbour.distance + neighbour.manhattan
+                if neighbour not in self.minheap:
+                    self.put(neighbour, self.currentcost[neighbour])
+
+    def getmanhattandistance(self, node):
+        finishnode = self.getfinishnode()
+        node.manhattan = abs(node.row - finishnode.row) + abs(node.column - finishnode.column)
+
+    def empty(self):
+        return len(self.minheap) == 0
+
+    def put(self, node, priority):
+        heapq.heappush(self.minheap, (priority, node))
+
+    def get(self):
+        return heapq.heappop(self.minheap)[1]
+
+
+
+
+
