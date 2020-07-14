@@ -18,7 +18,10 @@ class Node:  # node class holds all the attributes related to node
         self.isvisited = False
         self.previousnode = None
         self.isweight = False
+        self.manhattan = math.inf
 
+    def __lt__(self, other):
+        return self.manhattan < other.manhattan
 
 def createnode(row, column):
     newnode = Node(row, column)  # creates instance for Node class
