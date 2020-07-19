@@ -157,50 +157,58 @@ class Dfs(Graph):
 class Astar(Graph):
     def __init__(self, grid):
         super().__init__(grid)
-        self.currentcost = {}
-        self.minheap = []
+        self.currentcost = {}  # dict to store cost form nth node to  finishing node
+        self.minheap = []   # min heap to store nodes with their cost
 
     def astar(self):
         startnode = self.getstartnode()
-        self.getmanhattandistance(startnode)
-        self.currentcost[startnode] = startnode.manhattan
-        self.put(startnode, self.currentcost[startnode])
-        startnode.distance = 0
+
+        self.getmanhattandistance(startnode)  # gets manhattan distance for the first node
+        self.currentcost[startnode] = startnode.manhattan  # stores the value in dict
+        self.put(startnode, self.currentcost[startnode])  # store the node in heap
+        startnode.distance = 0  # set distance of start node as zero
 
         while not self.empty():
-            currentnode = self.get()
-            if currentnode.isfinishnode:
+            currentnode = self.get()  # get lowest value from heap
+            if currentnode.isfinishnode:  # if node is finish node then return
                 return
-            self.visitednodes.append(currentnode)
-            self.updateunvisitedneighbour(currentnode)
+            self.visitednodes.append(currentnode)  # store the node in visited nodes list(used for drawing nodes in UI)
+            self.updateunvisitedneighbour(currentnode)  # get neighbouring nodes of current node and updates their info
 
     def updateunvisitedneighbour(self, current_node):
-        neighbours = self.getunvisitednodes(current_node)
+        neighbours = self.getunvisitednodes(current_node)  # gets the neighbouring nodes
         for neighbour in neighbours:
             if neighbour.isweight:
                 tentativecost = current_node.distance + 3
+                # if neighbour is weight set the tentative cost i.e cost from
+                # current node to neighbour as distance(of current node) + 3
             else:
-                tentativecost = current_node.distance + 1
-            if tentativecost < neighbour.distance:
-                neighbour.previousnode = current_node
-                neighbour.distance = tentativecost
-                self.getmanhattandistance(neighbour)
+                tentativecost = current_node.distance + 1    # else set the tentative cost to distance + 1
+            if tentativecost < neighbour.distance:  # if tentative cost is less then distance of neighbour
+                neighbour.previousnode = current_node  # set current node as previous of neighbour
+                neighbour.distance = tentativecost   # set the distance of neighbour as tentative cost
+                self.getmanhattandistance(neighbour)  # get the manhattan distance for neighbour
                 self.currentcost[neighbour] = neighbour.distance + neighbour.manhattan
-                if neighbour not in self.minheap:
+                # in the dict of current cost, set neighbours value as its distance + manhattan value
+
+                if neighbour not in self.minheap:  # if neighbour is not present in heap add it
                     self.put(neighbour, self.currentcost[neighbour])
 
     def getmanhattandistance(self, node):
-        finishnode = self.getfinishnode()
+        finishnode = self.getfinishnode() # gets the finishing node
+        # get the distance between two points
         node.manhattan = abs(node.row - finishnode.row) + abs(node.column - finishnode.column)
 
-    def empty(self):
+    def empty(self):  # checks if heap is empty
         return len(self.minheap) == 0
 
-    def put(self, node, priority):
+    def put(self, node, priority):  # adds a value in heap with priority
         heapq.heappush(self.minheap, (priority, node))
 
-    def get(self):
+    def get(self):  # gets a value from heap
         return heapq.heappop(self.minheap)[1]
+    # when a value is popped from heap, it returns (priority, node) tuple
+    # but only node is required hence ''[1]'' is used while popping the value 
 
 
 
