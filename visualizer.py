@@ -34,7 +34,7 @@ class Game:
         self.startnodecolumn = node.start_node_column
         self.finishnoderow = node.finish_node_row
         self.finishnodecolumn = node.finish_node_column
-        self.dijkstrabutton = Button(265, 550, 65, 30, 'arial', 20, 'Djikstra', 6, 7)
+        self.dijkstrabutton = Button(265, 550, 65, 30, 'arial', 20, 'Dijkstra', 6, 7)
         self.bfsbutton = Button(215, 550, 30, 30, 'arial', 20, 'bfs', 6, 7)
         self.dfsbutton = Button(165, 550, 30, 30, 'arial', 20, 'dfs', 6, 7)
         self.astarbutton = Button(115, 550, 30, 30, 'arial', 20, 'A*', 6, 7)
@@ -136,7 +136,6 @@ class Game:
                         d.getshortestpath()  # gets the list of nodes leading to shortest path
                         self.pathprint(5, d.shortestpath)  # '''
                         pygame.event.clear()  # clears the event queue
-
 
                     elif self.resetbutton.chechkifclicked():
                         pygame.display.flip()
