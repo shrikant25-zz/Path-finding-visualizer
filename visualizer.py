@@ -2,6 +2,7 @@ import pygame
 import math
 import node
 import algorithms
+import threading
 
 pygame.init()  # creates pygame instance
 screen = pygame.display.set_mode((800, 600))  # sets the size of window
@@ -26,6 +27,7 @@ margin = 5
 screen.fill(color[4])  # fills the screen background with color from dictionary
 legend = pygame.image.load('legend.png')
 screen.blit(legend, (530, 50))
+pygame.display.flip()
 
 
 class Game:
@@ -44,6 +46,8 @@ class Game:
         # accepts x,y coords, width, height, fontname, fontsize, buttontext, backgroundcolor,
         # text color accordingly as parameter
         self.grid = []  # array to hold rectangles/nodes
+        self.runningthreadname = None  # flag to checks if the particular part is running
+        self.isalgorunning = False  # stores the name of the thread
 
     def creategrid(self):
         for row in range(20):  # loop creating nodes
@@ -96,46 +100,48 @@ class Game:
                     pygame.quit()  # end the pygame instance
                     quit()  # closes the window
 
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # checks if mouse button is pressed
+                #  checks if thread exists and is it dead or not
+                if self.runningthreadname is not None and self.runningthreadname.is_alive() is False:
+                    self.isalgorunning = False
+                    self.runningthreadname = None
+
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and (
+                        self.isalgorunning is False):  # checks if mouse button is pressed
                     if self.dijkstrabutton.chechkifclicked():  # checks if the dijkstra button is pressed
                         self.cleargrid()
                         g = algorithms.Dijkstra(self.grid)  # creates an instance of class graph from dijkstra  module
                         g.dijkstra()  # gets the list of all visited nodes
-                        # this function accepts the color-code, list of nodes and changes the color of visited nodes
-                        self.pathprint(7, g.visitednodes)
-                        g.getshortestpath()  # gets the list of nodes leading to shortest path
-                        self.pathprint(5, g.shortestpath)
-                        pygame.event.clear()  # clears the event queue
-                        # if any button is pressed during the execution of algorithm
-                        # that event will be removed from event queue
-                        # this avoids arbitrary functioning after the algorithm completes its process
+                        self.isalgorunning = True
+                        t1 = threading.Thread(target=self.print, args=[g])
+                        self.runningthreadname = t1
+                        t1.start()
 
                     elif self.bfsbutton.chechkifclicked():  # checks if the bfs button is pressed
                         self.cleargrid()
                         b = algorithms.Bfs(self.grid)
                         b.bfs()
-                        self.pathprint(7, b.visitednodes)
-                        b.getshortestpath()  # gets the list of nodes leading to shortest path
-                        self.pathprint(5, b.shortestpath)  # '''
-                        pygame.event.clear()  # clears the event queue
+                        self.isalgorunning = True
+                        t1 = threading.Thread(target=self.print, args=[b])
+                        self.runningthreadname = t1
+                        t1.start()
 
                     elif self.dfsbutton.chechkifclicked():  # checks if the bfs button is pressed
                         self.cleargrid()
                         d = algorithms.Dfs(self.grid)
                         d.dfs()
-                        self.pathprint(7, d.visitednodes)
-                        d.getshortestpath()  # gets the list of nodes leading to shortest path
-                        self.pathprint(5, d.shortestpath)  # '''
-                        pygame.event.clear()  # clears the event queue
+                        self.isalgorunning = True
+                        t1 = threading.Thread(target=self.print, args=[d])
+                        self.runningthreadname = t1
+                        t1.start()
 
                     elif self.astarbutton.chechkifclicked():  # checks if the bfs button is pressed
                         self.cleargrid()
-                        d = algorithms.Astar(self.grid)
-                        d.astar()
-                        self.pathprint(7, d.visitednodes)
-                        d.getshortestpath()  # gets the list of nodes leading to shortest path
-                        self.pathprint(5, d.shortestpath)  # '''
-                        pygame.event.clear()  # clears the event queue
+                        a = algorithms.Astar(self.grid)
+                        a.astar()
+                        self.isalgorunning = True
+                        t1 = threading.Thread(target=self.print, args=[a])
+                        self.runningthreadname = t1
+                        t1.start()
 
                     elif self.resetbutton.chechkifclicked():
                         pygame.display.flip()
@@ -163,14 +169,16 @@ class Game:
                             cnode.iswall = True  # sets the iswall attribute to true
                             self.drawrect(8, currentx, currenty)  # changes the color of rectangle
 
-                if event.type == pygame.MOUSEBUTTONUP and event.button == 1 and (self.flag == 1 or self.flag == 2):
+                if event.type == pygame.MOUSEBUTTONUP and event.button == 1 and (self.flag == 1 or self.flag == 2) and (
+                        self.isalgorunning is False):
                     # checks if mouse button is released
                     mousex, mousey = pygame.mouse.get_pos()  # gets the coordinates where mouse was released
                     newx, newy = self.get_rectanglepos(mousex, mousey)  # gets the coordinates of rectangle
                     if self.checknode(newx, newy) == 3:  # checks the type of node
                         self.setpos(newx, newy, currentx, currenty)
 
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and (
+                        self.isalgorunning is False):
                     mousex, mousey = pygame.mouse.get_pos()
                     currentx, currenty = self.get_rectanglepos(mousex, mousey)
                     self.flag = self.checknode(currentx, currenty)
@@ -250,6 +258,12 @@ class Game:
                     return rectx, recty
         return -1, -1
 
+    def print(self, algoobj):
+        self.pathprint(7,
+                       algoobj.visitednodes)  # this function accepts the color-code, list of nodes and changes the color of visited nodes
+        algoobj.getshortestpath()  # gets the list of nodes leading to shortest path
+        self.pathprint(5, algoobj.shortestpath)
+
     # function checks the type of node and calls the function to draw rectangle
     def pathprint(self, flag, path):
         for rect in path:
@@ -291,6 +305,7 @@ class Button:  # class use to create buttons
         # blit draws one thing on another
         # here it draws the textsurface on textrect
         screen.blit(textsurf, textrect)
+        pygame.display.flip()
 
     # this function returns the surface fo text and a rectangle to hold text on surface
     def text_objects(self, text, font):
