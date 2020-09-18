@@ -3,7 +3,7 @@ import math
 # variables to hold values for row and column of start node and finish node
 start_node_row = 0
 start_node_column = 0
-finish_node_row = 19
+finish_node_row = 38
 finish_node_column = 19
 
 
