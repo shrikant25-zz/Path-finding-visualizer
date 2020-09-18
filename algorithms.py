@@ -77,7 +77,7 @@ class Dijkstra(Graph):
             nearest_node = graph.pop(0)  # pops the first node from list
             if nearest_node.distance == math.inf:
                 # if distance of nearest node is sys.maxsize
-                # it means the node was not modifies for distance
+                # it means the node was not modified for distance
                 # this case happens when the node is wall
                 # it means we are trapped, time to stop entire process
                 return
@@ -174,6 +174,7 @@ class Astar(Graph):
                 return
             self.visitednodes.append(currentnode)  # store the node in visited nodes list(used for drawing nodes in UI)
             self.updateunvisitedneighbour(currentnode)  # get neighbouring nodes of current node and updates their info
+        return
 
     def updateunvisitedneighbour(self, current_node):
         neighbours = self.getunvisitednodes(current_node)  # gets the neighbouring nodes
@@ -195,7 +196,7 @@ class Astar(Graph):
                     self.put(neighbour, self.currentcost[neighbour])
 
     def getmanhattandistance(self, node):
-        finishnode = self.getfinishnode() # gets the finishing node
+        finishnode = self.getfinishnode()  # gets the finishing node
         # get the distance between two points
         node.manhattan = abs(node.row - finishnode.row) + abs(node.column - finishnode.column)
 
@@ -208,7 +209,7 @@ class Astar(Graph):
     def get(self):  # gets a value from heap
         return heapq.heappop(self.minheap)[1]
     # when a value is popped from heap, it returns (priority, node) tuple
-    # but only node is required hence ''[1]'' is used while popping the value 
+    # but only node is required hence ''[1]'' is used while popping the value
 
 
 
