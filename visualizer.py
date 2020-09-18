@@ -5,7 +5,7 @@ import algorithms
 import threading
 
 pygame.init()  # creates pygame instance
-screen = pygame.display.set_mode((800, 600))  # sets the size of window
+screen = pygame.display.set_mode((1000, 600))  # sets the size of window
 pygame.display.set_caption("Path Visualizer")  # sets the title
 
 # following is the dictionary containing colors
@@ -13,20 +13,24 @@ color = {1: [0, 128, 0],  # green
          2: [255, 0, 0],  # red
          3: [0, 0, 0],  # black
          4: [250, 250, 250],  # white
-         5: [0, 0, 128],  # blue
+         5: [0, 0, 255],  # blue
          6: [42, 53, 61],  # dark-gray
          7: [200, 200, 200],  # silver
          8: [255, 255, 0],  # yellow
-         9: [255, 192, 203]}  # pink
+         9: [255, 192, 203],  # pink
+         10: [60, 50, 50],  # brown
+         11: [138, 43, 226]}  # violet
 
 # following are global variables used to create rectangular objects
 width = 20
 height = 20
 margin = 5
+rowlen = 39
+columnlen = 20
 
-screen.fill(color[4])  # fills the screen background with color from dictionary
+screen.fill(color[10])  # fills the screen background with color from dictionary
 legend = pygame.image.load('legend.png')
-screen.blit(legend, (530, 50))
+screen.blit(legend, (430, 520))
 pygame.display.flip()
 
 
@@ -36,11 +40,11 @@ class Game:
         self.startnodecolumn = node.start_node_column
         self.finishnoderow = node.finish_node_row
         self.finishnodecolumn = node.finish_node_column
-        self.dijkstrabutton = Button(265, 550, 65, 30, 'arial', 20, 'Dijkstra', 6, 7)
-        self.bfsbutton = Button(215, 550, 30, 30, 'arial', 20, 'bfs', 6, 7)
-        self.dfsbutton = Button(165, 550, 30, 30, 'arial', 20, 'dfs', 6, 7)
-        self.astarbutton = Button(115, 550, 30, 30, 'arial', 20, 'A*', 6, 7)
-        self.resetbutton = Button(350, 550, 65, 30, 'arial', 20, 'Reset', 6, 7)
+        self.dijkstrabutton = Button(265, 550, 65, 40, 'arial', 20, 'Dijkstra', 6, 7)
+        self.bfsbutton = Button(215, 550, 30, 40, 'arial', 20, 'bfs', 6, 7)
+        self.dfsbutton = Button(165, 550, 30, 40, 'arial', 20, 'dfs', 6, 7)
+        self.astarbutton = Button(115, 550, 30, 40, 'arial', 20, 'A*', 6, 7)
+        self.resetbutton = Button(350, 550, 65, 40, 'arial', 20, 'Reset', 6, 7)
         self.flag = 0
         # creates the button instance
         # accepts x,y coords, width, height, fontname, fontsize, buttontext, backgroundcolor,
@@ -50,9 +54,9 @@ class Game:
         self.isalgorunning = False  # stores the name of the thread
 
     def creategrid(self):
-        for row in range(20):  # loop creating nodes
+        for row in range(rowlen):  # loop creating nodes
             rows = []
-            for column in range(20):
+            for column in range(columnlen):
                 flag = 3
                 # checks the row and column matches the variables
                 if row == self.startnoderow and column == self.startnodecolumn:
@@ -250,8 +254,8 @@ class Game:
         # if mouse coordinates lie between the rectangle coordinates
         # then those rectangle coordinates will be return
         # if none matches then -1 will be return
-        for row in range(20):
-            for column in range(20):
+        for row in range(rowlen):
+            for column in range(columnlen):
                 rectx = (margin + width) * row + margin
                 recty = (margin + height) * column + margin
                 if rectx <= mousex <= rectx + width and recty <= mousey <= recty + height:
@@ -267,13 +271,14 @@ class Game:
     # function checks the type of node and calls the function to draw rectangle
     def pathprint(self, flag, path):
         for rect in path:
-            pygame.time.wait(10)
+            pygame.time.wait(5)
             if rect.isstartnode:
                 cflag = 1
             elif rect.isfinishnode:
                 cflag = 2
             else:
                 cflag = flag
+            self.drawrect(11, (margin + width) * rect.row + margin, (margin + height) * rect.column + margin)
             self.drawrect(cflag, (margin + width) * rect.row + margin, (margin + height) * rect.column + margin)
 
     def drawrect(self, flag, x, y):  # function to draw rectangle, excepts color-code, x-coordinate and y-coordinate
@@ -325,7 +330,7 @@ class Button:  # class use to create buttons
             self.bcolorcode = 1  # colorcode is changed
             self.createbutton()  # button is recreated with new color
             pygame.display.flip()
-            pygame.time.wait(50)
+            pygame.time.wait(25)
             self.bcolorcode = 6  # colorcode is changed
             self.createbutton()  # button is recreated with new color
             return 1
